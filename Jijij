@@ -1,0 +1,19 @@
+-- Total load time in seconds
+local totalTime = 120 -- 2 minutes
+local steps = 100
+local delay = totalTime / steps -- time between each percent
+
+for i = 1, steps do
+    -- Clear screen (optional for terminal)
+    os.execute("clear") -- On Windows, change to os.execute("cls")
+
+    -- Display loading percent and message
+    print("Loading: " .. i .. "%")
+    print("Please Wait, Be Patience The Spawner Will Appear If It Reach 100%")
+
+    -- Wait for the calculated delay before going to next percent
+    os.execute("sleep " .. delay) -- On Windows: os.execute("timeout /nobreak " .. delay)
+end
+
+-- Done
+print("Loading complete! Spawner appearing...")
