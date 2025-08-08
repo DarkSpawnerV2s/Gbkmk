@@ -1,19 +1,38 @@
--- Total load time in seconds
-local totalTime = 120 -- 2 minutes
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "LoadingScreen"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create Background
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bg.Parent = screenGui
+
+-- Create Loading Text
+local loadingLabel = Instance.new("TextLabel")
+loadingLabel.Size = UDim2.new(1, 0, 0.5, 0)
+loadingLabel.Position = UDim2.new(0, 0, 0.25, 0)
+loadingLabel.BackgroundTransparency = 1
+loadingLabel.TextScaled = true
+loadingLabel.Font = Enum.Font.SourceSansBold
+loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingLabel.Parent = bg
+
+-- Setup timing
+local totalTime = 120 -- seconds
 local steps = 100
-local delay = totalTime / steps -- time between each percent
+local delay = totalTime / steps -- time per step (1.2 sec)
 
+-- Loop from 1% to 100%
 for i = 1, steps do
-    -- Clear screen (optional for terminal)
-    os.execute("clear") -- On Windows, change to os.execute("cls")
-
-    -- Display loading percent and message
-    print("Loading: " .. i .. "%")
-    print("Please Wait, Be Patience The Spawner Will Appear If It Reach 100%")
-
-    -- Wait for the calculated delay before going to next percent
-    os.execute("sleep " .. delay) -- On Windows: os.execute("timeout /nobreak " .. delay)
+    loadingLabel.Text = "Loading: " .. i .. "%\nPlease Wait, Be Patience The Spawner Will Appear If It Reach 100%"
+    wait(delay)
 end
 
--- Done
-print("Loading complete! Spawner appearing...")
+-- Done loading
+loadingLabel.Text = "Loading complete! Spawner appearing..."
+wait(2)
+
+-- Remove loading screen
+screenGui:Destroy()
