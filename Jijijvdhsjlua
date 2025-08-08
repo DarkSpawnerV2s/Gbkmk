@@ -1,0 +1,114 @@
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "LoadingScreen"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true -- Covers entire screen, ignores top bar
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Full Background
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.Position = UDim2.new(0, 0, 0, 0)
+bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bg.Parent = screenGui
+
+-- Gradient Background
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 25, 25))
+}
+gradient.Rotation = 90
+gradient.Parent = bg
+
+-- Center Loading Box
+local loadingBox = Instance.new("Frame")
+loadingBox.AnchorPoint = Vector2.new(0.5, 0.5)
+loadingBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+loadingBox.Size = UDim2.new(0.6, 0, 0.25, 0)
+loadingBox.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+loadingBox.Parent = bg
+Instance.new("UICorner", loadingBox).CornerRadius = UDim.new(0.05, 0)
+
+-- Progress Bar Background
+local progressBg = Instance.new("Frame")
+progressBg.AnchorPoint = Vector2.new(0.5, 0)
+progressBg.Position = UDim2.new(0.5, 0, 0.6, 0)
+progressBg.Size = UDim2.new(0.9, 0, 0.15, 0)
+progressBg.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+progressBg.Parent = loadingBox
+Instance.new("UICorner", progressBg).CornerRadius = UDim.new(1, 0)
+
+-- Progress Fill
+local progressFill = Instance.new("Frame")
+progressFill.Size = UDim2.new(0, 0, 1, 0)
+progressFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+progressFill.Parent = progressBg
+Instance.new("UICorner", progressFill).CornerRadius = UDim.new(1, 0)
+
+-- Function to style text
+local function createStyledText(parent, position, size, font)
+    local label = Instance.new("TextLabel")
+    label.AnchorPoint = Vector2.new(0.5, 0)
+    label.Position = position
+    label.Size = size
+    label.BackgroundTransparency = 1
+    label.TextScaled = true
+    label.Font = font
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Parent = parent
+
+    -- Outline for text
+    local stroke = Instance.new("UIStroke")
+    stroke.Thickness = 2
+    stroke.Color = Color3.fromRGB(0, 0, 0)
+    stroke.Parent = label
+
+    -- Gradient text color
+    local textGradient = Instance.new("UIGradient")
+    textGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 200, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 200))
+    }
+    textGradient.Rotation = 90
+    textGradient.Parent = label
+
+    return label
+end
+
+-- Percentage Text
+local loadingLabel = createStyledText(loadingBox, UDim2.new(0.5, 0, 0.25, 0), UDim2.new(1, -20, 0.3, 0), Enum.Font.GothamBold)
+
+-- Message Text
+local messageLabel = createStyledText(loadingBox, UDim2.new(0.5, 0, 0.8, 0), UDim2.new(1, -20, 0.2, 0), Enum.Font.Gotham)
+
+-- Timing
+local totalTime = 120 -- seconds
+local steps = 100
+local delay = totalTime / steps
+
+-- Loop from 1% → 100%
+for i = 1, steps do
+    loadingLabel.Text = "Loading: " .. i .. "%"
+    messageLabel.Text = "Please Wait, Be Patience The Spawner Will Appear If It Reach 100%"
+    progressFill.Size = UDim2.new(i / 100, 0, 1, 0)
+    wait(delay)
+end
+
+-- Done loading
+loadingLabel.Text = "Loading complete!"
+messageLabel.Text = "Spawner is appearing..."
+wait(2)
+
+-- Fade out everything
+for transparency = 0, 1, 0.05 do
+    bg.BackgroundTransparency = transparency
+    loadingBox.BackgroundTransparency = transparency
+    progressBg.BackgroundTransparency = transparency
+    progressFill.BackgroundTransparency = transparency
+    loadingLabel.TextTransparency = transparency
+    messageLabel.TextTransparency = transparency
+    wait(0.05)
+end
+
+screenGui:Destroy()
